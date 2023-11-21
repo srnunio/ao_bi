@@ -1,4 +1,4 @@
-# [bi_ao](https://pub.dev/packages/bi_ao)
+# [ao_bi](https://pub.dev/packages/ao_bi)
 
 Validate Angolan Identity Card
 
@@ -6,11 +6,11 @@ Validate Angolan Identity Card
 
 ```yaml
 dependencies:
-  bi_ao: ^0.0.1
+  ao_bi: ^0.0.1
 
   or
 
-  bi_ao:
+  ao_bi:
     git:
       url: https://github.com/srnunio/bi_ao
 ```
