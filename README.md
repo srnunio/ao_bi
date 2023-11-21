@@ -12,7 +12,7 @@ dependencies:
 
   ao_bi:
     git:
-      url: https://github.com/srnunio/bi_ao
+      url: https://github.com/srnunio/ao_bi
 ```
 
 # Usage
