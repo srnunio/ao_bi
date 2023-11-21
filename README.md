@@ -32,9 +32,9 @@ void main() {
 ```
 
 ## Preview
-
+<br>
 <img title="" src="https://github.com/srnunio/bi_ao/blob/main/preview.gif" alt="" width="400">
-
+</br>
 ## License
 
 bi_ao is available under the MIT license.
