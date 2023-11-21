@@ -33,7 +33,7 @@ void main() {
 
 ## Preview
 <br>
-<img title="" src="https://github.com/srnunio/bi_ao/blob/main/preview.gif" alt="" width="400">
+<img title="" src="https://github.com/srnunio/bi_ao/blob/master/preview.gif" alt="" width="400">
 </br>
 ## License
 
