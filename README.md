@@ -7,6 +7,12 @@ Validate Angolan Identity Card
 ```yaml
 dependencies:
   bi_ao: ^0.0.1
+
+  or
+
+  bi_ao:
+    git:
+      url: https://github.com/srnunio/bi_ao
 ```
 
 # Usage
@@ -33,8 +39,9 @@ void main() {
 
 ## Preview
 <br>
-<img title="" src="https://github.com/srnunio/bi_ao/blob/master/preview.gif" alt="" width="400">
+<img title="" src="https://github.com/srnunio/ao_bi/blob/master/preview.gif" alt="" width="400">
 </br>
+
 ## License
 
 bi_ao is available under the MIT license.
