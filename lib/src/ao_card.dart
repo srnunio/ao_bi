@@ -2,28 +2,26 @@ import 'package:flutter/material.dart';
 import 'ao_card_dialog.dart';
 import 'models.dart';
 
-Color get _kBackgroundColor => Colors.transparent;
-
 class BIUtil {
   BIUtil._();
 
-  static BuildContext? _buildContext;
+  /// [_dialogContext] Instance of the open dialog.
+  static BuildContext? _dialogContext;
 
-  /// [closeDialog] close popup if is visible
-  /// You can return a value just pass it through parameter [data]
+  /// [dismissDialog] close popup if is visible
   /// ```dart
-  /// var result = await BIUtil.scan(title: "Scan my B.I");
+  ///     BIUtil.dismissDialog();
   /// ```
-  static void closeDialog() async {
-    final noContext = _buildContext == null;
+  static void dismissDialog() async {
+    final noContext = _dialogContext == null;
     assert(() {
-      if (noContext || !(_buildContext?.mounted ?? false)) {
+      if (noContext || !(_dialogContext?.mounted ?? false)) {
         throw FlutterError('No dialog instances found');
       }
       return true;
     }());
-    Navigator.pop(_buildContext!);
-    _buildContext = null;
+    Navigator.pop(_dialogContext!);
+    _onDispose();
   }
 
   /// [scan] popup to scanner angolan identity card
@@ -43,84 +41,39 @@ class BIUtil {
     bool useSafeArea = false,
   }) async {
     assert(() {
-      if (_buildContext != null) {
+      if (_dialogContext != null) {
         throw FlutterError('No more than two instances are allowed');
       }
       return true;
     }());
 
-    return await _view(
-      title: title,
-      context: context,
-      barStyle: barStyle ?? BIQrStyle(),
-      useRootNavigator: useRootNavigator,
-      cutOutSize: cutOutSize,
-      useSafeArea: useSafeArea,
-    );
-  }
-
-  /// [title] title in app bar
-  ///
-  /// [cutOutSize] custom size border Qr camera
-  ///
-  /// [barStyle] modify the style of the Bar app
-  ///
-  /// [onContext] notify a new context
-  ///
-  static Future<BIData?> _view({
-    required String title,
-    required BuildContext context,
-    required BIQrStyle barStyle,
-    required bool useRootNavigator,
-    required double? cutOutSize,
-    required bool useSafeArea,
-  }) async {
     return await showDialog<dynamic>(
       context: context,
       barrierDismissible: false,
       useSafeArea: useSafeArea,
       barrierColor: Colors.transparent,
       useRootNavigator: useRootNavigator,
-      builder: (newContext) {
-        _buildContext = newContext;
-        return BIUtil._viewDialog(
-          barStyle: barStyle,
-          title: title,
-          cutOutSize: cutOutSize,
+      builder: (ctx) {
+        /// register instance
+        _dialogContext = ctx;
+        return Dialog(
+          backgroundColor: Colors.black12,
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          shadowColor: Colors.black12,
+          insetPadding: const EdgeInsets.all(0.0),
+          surfaceTintColor: Colors.black12,
+          elevation: 0.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0)),
+          ),
+          child: BIQrView(
+            title: title,
+            barStyle: barStyle ?? BIQrStyle(),
+            cutOutSize: cutOutSize,
+            onDispose: _onDispose,
+          ),
         );
       },
-    );
-  }
-
-  /// [title] title in app bar
-  ///
-  /// [cutOutSize] custom size border Qr camera
-  ///
-  /// [barStyle] modify the style of the Bar app
-  ///
-  /// [onContext] notify a new context
-  ///
-  static Dialog _viewDialog({
-    required String title,
-    required BIQrStyle barStyle,
-    required double? cutOutSize,
-  }) {
-    return Dialog(
-      backgroundColor: Colors.black12,
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      shadowColor: Colors.black12,
-      insetPadding: const EdgeInsets.all(0.0),
-      surfaceTintColor: Colors.black12,
-      elevation: 0.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(0)),
-      ),
-      child: BIQrView(
-        title: title,
-        barStyle: barStyle,
-        cutOutSize: cutOutSize,
-        onClose: () => _buildContext = null,
-      ),
     );
   }
 
@@ -151,11 +104,11 @@ class BIUtil {
           resultByExpirationDate.$2.toString().replaceAll(RegExp(r' +'), ' ');
 
       return BIData(
-        id: resultByID.$1,
-        name: resultByName.$1,
-        province: province,
-        gender: resultByGender.$1,
-        maritalStatus: resultByMaritalStatus.$1,
+        id: resultByID.$1.capitalize,
+        name: resultByName.$1.capitalize,
+        province: province.capitalize,
+        gender: resultByGender.$1.capitalize,
+        maritalStatus: resultByMaritalStatus.$1.capitalize,
         birthday: resultByBirthday.$1.toDate,
         dataOfIssue: resultByDataOfIssue.$1.toDate,
         expirationDate: resultByExpirationDate.$1.toDate,
@@ -163,6 +116,12 @@ class BIUtil {
     } catch (error) {
       return null;
     }
+  }
+
+  /// [_dialogContext] Remove the instance from the context,
+  /// this indicates that the dialog is closed.
+  static void _onDispose() {
+    _dialogContext = null;
   }
 }
 
@@ -186,13 +145,13 @@ class BIUtil {
 (String?, String) _extractTheFirstContent(String content) =>
     _extract(content: content, expName: "WHITE_SPACE", groupId: 0);
 
-/// [_extractTheFirstContent] Extract any content before a whitespace and return a tuple.
-/// (String? valueFound, String content)
+/// [_extractTheFirstGender] Extract the value that corresponds to a gender
+/// and return a tuple. (String? valueFound, String content)
 (String?, String) _extractTheFirstGender(String content) =>
     _extract(content: content, expName: "GENDER", groupId: 0);
 
-/// [_extractTheFirstMartialStatus] Extract any content before a whitespace and return a tuple.
-/// (String? valueFound, String content)
+/// [_extractTheFirstMartialStatus] Extract the value that corresponds to a MartialStatus
+/// and return a tuple.(String? valueFound, String content)
 (String?, String) _extractTheFirstMartialStatus(String content) =>
     _extract(content: content, expName: "MARTIAL", groupId: 0);
 
@@ -234,8 +193,10 @@ Map<String, RegExp> get _codeRegex {
     // Capture the first sequence before the first space
     "WHITE_SPACE": RegExp(r'^\S+'),
     // Capture the first sequence before the first space
+    // that starts with the initials MF and has 8 to 9 characters.
     "GENDER": RegExp(r'\b[MF]\S{7,8}\b'),
-    // Capture the first sequence before the first space
+    // Capture the first sequence before the first space,
+    // that starts with the initials SVC and has 5 to 8 characters.
     "MARTIAL": RegExp(r'\b[SVC]\S{4,7}\b'),
     // Capture dates in the formats dd/mm/yyyy, dd-mm-yyyy, or yyyy-mm-dd.
     "DATE": RegExp(r'\b\d{2}[/-]\d{2}[/-]\d{4}\b|\b\d{4}-\d{2}-\d{2}\b'),
@@ -252,11 +213,17 @@ extension _StringEx on String {
     var valueFormatted = split.reversed.toList().join("-");
     return DateTime.tryParse(valueFormatted.trim());
   }
+
+  /// [capitalize] capitalize string
+  String get capitalize {
+    if (isEmpty) return this;
+    return this[0].toUpperCase() + substring(1).toLowerCase();
+  }
 }
 
 /// [_StringNullableEx] Extension for null string.
 extension _StringNullableEx on String? {
-  DateTime? get toDate {
-    return (this ?? '').toDate;
-  }
+  DateTime? get toDate => (this ?? '').toDate;
+
+  String get capitalize => (this ?? '').capitalize;
 }
