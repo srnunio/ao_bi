@@ -11,18 +11,19 @@ class BIQrView extends StatefulWidget {
   /// [title] title on appbar
   final String title;
 
+  /// [cutOutSize]
   final double? cutOutSize;
 
   /// [barStyle] Modify the style of the Bar app
   final BIQrStyle barStyle;
 
-  final Function() onClose;
+  final Function() onDispose;
 
   BIQrView({
     required this.title,
     required this.barStyle,
     required this.cutOutSize,
-    required this.onClose,
+    required this.onDispose,
   });
 
   @override
@@ -46,13 +47,11 @@ class _BIQrViewState extends State<BIQrView> {
     _controller?.stopCamera();
     var data = BIUtil.check(code);
     Navigator.of(context, rootNavigator: true).pop(data);
-    widget.onClose();
   }
 
   /// [_onClose] close page
   void _onClose() {
     Navigator.of(context, rootNavigator: true).pop();
-    widget.onClose();
   }
 
   /// [_onQRViewCreated] init qr controller
@@ -103,6 +102,12 @@ class _BIQrViewState extends State<BIQrView> {
     } else if (Platform.isIOS) {
       _controller!.resumeCamera();
     }
+  }
+
+  @override
+  void dispose() {
+    widget.onDispose();
+    super.dispose();
   }
 
   @override
