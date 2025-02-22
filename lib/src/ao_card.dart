@@ -77,6 +77,15 @@ class BIUtil {
     );
   }
 
+  ///[isValidID] Checks if the provided value corresponds to an Angolan ID number.
+  /// return true ou false
+  static bool isValidID(String text) {
+    var content = text.replaceAll(RegExp(r'[\r\n]+'), ' ');
+    if (content.isEmpty) return false;
+    var id = _extractTheID(content).$1 ?? "";
+    return (id.isNotEmpty);
+  }
+
   /// [check] Validate if the data constitutes an Angolan ID card.
   /// return [BIData] nullable or not
   static BIData? check(String contentText) {
