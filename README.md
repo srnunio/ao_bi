@@ -6,29 +6,61 @@ Validate Angolan Identity Card
 
 ```yaml
 dependencies:
-  bi_ao: ^0.0.1
+  bi_ao: ^0.2.0
 ```
 
 # Usage
 
+Call the QR reader to scan the document and extract the data
 ```dart
-void main() {
-  BI.verify(string);
+void onScan() async {
+  var result = await BIUtil.scan(
+      title: "Scan my document", 
+      context: context
+  );
 }
 ```
+
+If you have your own QR reader and just want to process the data, simply call the ```check``` method.
+```dart
+void onScan() async {
+  var result = await BIUtil.check("data");
+}
+```
+To validate if a string corresponds to an Angolan ID number, simply call the ```isValid``` method.
+
+```dart
+void onCheckID() async {
+  var result = BIUtil.isValidID('987654321LA009');
+}
+```
+
 **BIData** is the type of return
 
 ```json
 {
-    "id": "105000733BA101",
-    "name": "NOME COMPLETO",
-    "province": "LUANDA",
-    "gender": "MASCULINO",
-    "state": null,
-    "birthday": "1992-08-12T00:00:00.000",
-    "data_of_issue": "2020-01-01T00:00:00.000",
-    "expiration_date": "2030-01-01T00:00:00.000"
+  "ID": "ID",
+  "NAME": "NAME",
+  "PROVINCE": "PROVINCE",
+  "GENDER": "GENDER",
+  "MARITAL_STATUS": "MARITAL_STATUS",
+  "BIRTHDAY": "BIRTHDAY",
+  "DATE_OF_ISSUE": "DATE_OF_ISSUE",
+  "EXPIRATION_DATE": "EXPIRATION_DATE"
 }
+```
+
+**NOTE:** This package uses the ```qr_code_scanner``` library, so make sure to configure the necessary permissions to grant camera access
+
+## iOS Integration
+***
+In order to use this plugin, add the following to your Info.plist file:
+
+```
+<key>io.flutter.embedded_views_preview</key>
+<true/>
+<key>NSCameraUsageDescription</key>
+<string>This app needs camera access to scan QR codes</string>
 ```
 
 ## Preview
