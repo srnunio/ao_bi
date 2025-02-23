@@ -46,19 +46,19 @@ class _BIQrViewState extends State<BIQrView> {
   void _onRead(String code) async {
     _controller?.stopCamera();
     var data = BIUtil.check(code);
-    Navigator.of(context, rootNavigator: true).pop(data);
+    Navigator.of(context).pop(data);
   }
 
   /// [_onClose] close page
   void _onClose() {
-    Navigator.of(context, rootNavigator: true).pop();
+    Navigator.of(context).pop();
   }
 
   /// [_onQRViewCreated] init qr controller
   void _onQRViewCreated(QRViewController controller) {
-    _controller = controller;
+    setState(() => _controller = controller);
     controller.scannedDataStream.listen((sd) {
-      if (sd.code != null) {
+      if (context.mounted && sd.code != null) {
         controller.pauseCamera();
         _onRead(sd.code!);
       }
@@ -68,19 +68,22 @@ class _BIQrViewState extends State<BIQrView> {
   /// [_buildQrView] Qr code view
   Widget _buildQrView() {
     final barStyle = widget.barStyle;
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      formatsAllowed: const [BarcodeFormat.qrcode],
-      overlay: QrScannerOverlayShape(
-        overlayColor: barStyle.overlayColor,
-        borderColor: barStyle.borderColor,
-        borderRadius: 10,
-        borderLength: 10 * 3,
-        borderWidth: 10,
-        cutOutSize: widget.cutOutSize ?? _getCutOutSize(),
+    return Opacity(
+      opacity: (_controller != null) ? 1 : 0,
+      child: QRView(
+        key: qrKey,
+        onQRViewCreated: _onQRViewCreated,
+        formatsAllowed: const [BarcodeFormat.qrcode],
+        overlay: QrScannerOverlayShape(
+          overlayColor: barStyle.overlayColor,
+          borderColor: barStyle.borderColor,
+          borderRadius: 10,
+          borderLength: 10 * 3,
+          borderWidth: 10,
+          cutOutSize: widget.cutOutSize ?? _getCutOutSize(),
+        ),
+        onPermissionSet: (ctrl, p) {},
       ),
-      onPermissionSet: (ctrl, p) {},
     );
   }
 
@@ -106,6 +109,7 @@ class _BIQrViewState extends State<BIQrView> {
 
   @override
   void dispose() {
+    _controller = null;
     widget.onDispose();
     super.dispose();
   }
