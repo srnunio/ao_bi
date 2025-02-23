@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:ao_bi/bi.dart';
 import 'package:example/bi_data_view.dart';
 import 'package:example/bottom_sheet_container.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,73 +39,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  BIData? _biData;
-  QRViewController? controller;
 
-  void onRead(String code) async {
-    if (_biData != null) return;
-
-    _biData = BI.verify(code);
-
-    if (_biData == null) return;
-
-    await showModalBottomSheet<dynamic>(
-        context: context,
-        showDragHandle: true,
-        isScrollControlled: true,
-        useRootNavigator: true,
-        barrierColor: Colors.black.withOpacity(0.2),
-        backgroundColor: Colors.white,
-        useSafeArea: true,
-        builder: (ctx) => SheetContainer(
-              height: MediaQuery.of(context).size.height * (3 / 4.5),
-              child: BIDataView(_biData!),
-            ));
-    _biData = null;
-    controller!.resumeCamera();
-  }
-
-  void onScanner() async {}
-
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      if (scanData.code != null) {
-        controller.pauseCamera();
-        onRead(scanData.code!);
-      }
-    });
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller!.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller!.resumeCamera();
-    }
-  }
-
-
-
-  Widget _buildQrView(BuildContext context) {
-    var scanArea = (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
-        ? 280.0
-        : 350.0;
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      formatsAllowed: const [BarcodeFormat.qrcode],
-      overlay: QrScannerOverlayShape(
-          borderColor: Colors.red,
-          borderRadius: 10,
-          borderLength: 10 * 3,
-          borderWidth: 10,
-          cutOutSize: scanArea),
-      onPermissionSet: (ctrl, p) {},
+  void shoResult(BIData? data) {
+    if (data == null) return;
+    showModalBottomSheet<dynamic>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      barrierColor: Colors.black.withOpacity(0.2),
+      backgroundColor: Colors.white,
+      useSafeArea: true,
+      builder: (ctx) => SheetContainer(
+        height: MediaQuery.of(context).size.height * (3 / 4.5),
+        child: BIDataView(data),
+      ),
     );
+  }
+
+  void onScanner() async {
+    BIUtil.scan(title: "Scan my document", context: context).then(shoResult);
   }
 
   @override
@@ -118,14 +68,32 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
+      body: Container(
+        padding: const EdgeInsets.all(30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Expanded(
-              flex: 5,
-              child: _buildQrView(context),
-            ),
+            SizedBox(
+              height: 50.0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: MaterialButton(
+                  onPressed: onScanner,
+                  color: Colors.deepPurple,
+                  elevation: 0.0,
+                  child: const SizedBox(
+                    width: double.infinity,
+                    height: 50.0,
+                    child: Center(
+                      child: Text(
+                        "Scan",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
