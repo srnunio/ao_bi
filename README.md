@@ -5,8 +5,8 @@ Validate Angolan Identity Card
 ## Installation
 
 ```yaml
-dependencies:
-  ao_bi: ^0.2.0
+dependencies: 
+  ao_bi: ^0.2.0 
   
   or
 
@@ -70,8 +70,9 @@ In order to use this plugin, add the following to your Info.plist file:
 ```
 
 ## Preview
-
-<img title="" src="https://github.com/srnunio/bi_ao/blob/main/preview.gif" alt="" width="400">
+<br>
+<img title="" src="https://github.com/srnunio/ao_bi/blob/master/preview.gif" alt="" width="400">
+</br>
 
 ## License
 
