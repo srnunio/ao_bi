@@ -1,9 +1,4 @@
-## 0.0.1
-* verify ID
-* verify name
-* verify province
-* verify gender
-* verify state
-* verify birthday
-* verify date of issue
-* verify expiration date
+## 0.2.0
+* Improvement in data extraction
+* Embedded QR code reading
+* Validate the ID number

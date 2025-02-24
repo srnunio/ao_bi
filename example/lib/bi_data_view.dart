@@ -1,4 +1,4 @@
-import 'package:ao_bi/bi.dart';
+import 'package:ao_bi/ao_bi.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -27,10 +27,11 @@ class _BIDataViewState extends State<BIDataView> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         Expanded(
-            child: Container(
-          alignment: Alignment.centerRight,
-          child: SelectableText(value),
-        ))
+          child: Container(
+            alignment: Alignment.centerRight,
+            child: SelectableText(value),
+          ),
+        )
       ],
     );
   }
@@ -85,13 +86,14 @@ class _BIDataViewState extends State<BIDataView> {
               const SizedBox(height: 20.0),
               buildTile(
                   label: "Estado do documento",
-                  value: data.expired() ? "Expirado" : "Válido"),
+                  value: data.isExpired() ? "Expirado" : "Válido"),
               const Divider(),
               buildTile(label: "BI", value: data.id ?? "..."),
               const Divider(),
               buildTile(label: "Nome", value: data.name ?? "..."),
               const Divider(),
-              buildTile(label: "Estado civil", value: data.state ?? '...'),
+              buildTile(
+                  label: "Estado civil", value: data.maritalStatus ?? '...'),
               const Divider(),
               buildTile(label: "Genero", value: data.gender ?? '...'),
               const Divider(),

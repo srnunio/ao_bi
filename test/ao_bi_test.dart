@@ -1,18 +1,28 @@
-import 'package:ao_bi/bi.dart';
-import 'package:test/test.dart';
+import 'package:ao_bi/src/ao_bi.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  var mockData = '''EDIVALDO NÚNIO BAPTISTA MARTINS 005897844LA042 05-02-1994 MASCULINO CASADO 25/03/2023 24/03/2033 LUANDA V01 ''';
-
-  test('validateBI', () {
-    var data = BI.verify(mockData);
+  var mockData =
+      '''SR NÚNIO 987654321LA009 LUANDA 31/12/1894 MASCULINO CASADO 10/10/2023 10/10/2033 LUANDA V01''';
+  test('validateBIUtil', () {
+    var data = BIUtil.check(mockData);
 
     expect(data != null, true);
 
-    expect(data!.expired(), false);
+    expect(data!.isExpired(), false);
 
-    data!.toMap().forEach((key, value) {
+    data.toMap().forEach((key, value) {
       print("${key.toUpperCase()}: $value");
     });
+  });
+
+  test('check if ID is valid', () {
+    var result = BIUtil.isValidID('987654321LA009');
+    expect(result, true);
+  });
+
+  test('check if ID is not valid', () {
+    var result = BIUtil.isValidID('L987654321LA009');
+    expect(result, false);
   });
 }
