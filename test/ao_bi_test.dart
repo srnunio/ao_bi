@@ -1,4 +1,4 @@
-import 'package:ao_bi/src/ao_card.dart';
+import 'package:ao_bi/src/ao_bi.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

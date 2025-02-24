@@ -30,12 +30,12 @@ class BIUtil {
   ///
   /// [cutOutSize] custom size border Qr camera
   ///
-  /// [barStyle] modify the style of the Bar app
+  /// [style] modify the style of the Bar app
   ///
   static Future<BIData?> scan({
     required String title,
     required BuildContext context,
-    BIQrStyle? barStyle,
+    BIQrStyle? style,
     bool useRootNavigator = false,
     double? cutOutSize,
     bool useSafeArea = false,
@@ -68,7 +68,7 @@ class BIUtil {
           ),
           child: BIQrView(
             title: title,
-            barStyle: barStyle ?? BIQrStyle(),
+            style: style ?? BIQrStyle(),
             cutOutSize: cutOutSize,
             onDispose: _onDispose,
           ),

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ao_bi/src/ao_card.dart';
+import 'package:ao_bi/src/ao_bi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -14,14 +14,14 @@ class BIQrView extends StatefulWidget {
   /// [cutOutSize]
   final double? cutOutSize;
 
-  /// [barStyle] Modify the style of the Bar app
-  final BIQrStyle barStyle;
+  /// [style] Modify the style of the Bar app
+  final BIQrStyle style;
 
   final Function() onDispose;
 
   BIQrView({
     required this.title,
-    required this.barStyle,
+    required this.style,
     required this.cutOutSize,
     required this.onDispose,
   });
@@ -67,7 +67,7 @@ class _BIQrViewState extends State<BIQrView> {
 
   /// [_buildQrView] Qr code view
   Widget _buildQrView() {
-    final barStyle = widget.barStyle;
+    final style = widget.style;
     return Opacity(
       opacity: (_controller != null) ? 1 : 0,
       child: QRView(
@@ -75,14 +75,16 @@ class _BIQrViewState extends State<BIQrView> {
         onQRViewCreated: _onQRViewCreated,
         formatsAllowed: const [BarcodeFormat.qrcode],
         overlay: QrScannerOverlayShape(
-          overlayColor: barStyle.overlayColor,
-          borderColor: barStyle.borderColor,
+          overlayColor: style.overlayColor,
+          borderColor: style.borderColor,
           borderRadius: 10,
           borderLength: 10 * 3,
           borderWidth: 10,
           cutOutSize: widget.cutOutSize ?? _getCutOutSize(),
         ),
-        onPermissionSet: (ctrl, p) {},
+        onPermissionSet: (ctrl, state) {
+          if (!state) _onClose();
+        },
       ),
     );
   }
@@ -109,14 +111,15 @@ class _BIQrViewState extends State<BIQrView> {
 
   @override
   void dispose() {
-    _controller = null;
+    _controller?.dispose();
     widget.onDispose();
+    _controller = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final barStyle = widget.barStyle;
+    final style = widget.style;
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -124,11 +127,11 @@ class _BIQrViewState extends State<BIQrView> {
         ),
         title: Text(
           widget.title,
-          style: barStyle.labelStyle,
+          style: style.labelStyle,
         ),
-        backgroundColor: barStyle.appBarBackgroundColor,
+        backgroundColor: style.appBarBackgroundColor,
         leading: CloseButton(
-          color: barStyle.accentColor,
+          color: style.accentColor,
           onPressed: _onClose,
         ),
         elevation: 0.0,
