@@ -1,4 +1,4 @@
-import 'package:ao_bi/bi.dart';
+import 'package:ao_bi/ao_bi.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

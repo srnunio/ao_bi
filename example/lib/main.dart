@@ -1,4 +1,4 @@
-import 'package:ao_bi/bi.dart';
+import 'package:ao_bi/ao_bi.dart';
 import 'package:example/bi_data_view.dart';
 import 'package:example/bottom_sheet_container.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
       showDragHandle: true,
       isScrollControlled: true,
       useRootNavigator: true,
-      barrierColor: Colors.black.withOpacity(0.2),
+      barrierColor: Colors.black38,
       backgroundColor: Colors.white,
       useSafeArea: true,
       builder: (ctx) => SheetContainer(
@@ -58,7 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void onScanner() async {
-    BIUtil.scan(title: "Scan my document", context: context).then(shoResult);
+    BIUtil.scan(
+      context: context,
+      style: BIQrStyle(
+        appBarBackgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        accentColor: Colors.white,
+        labelStyle: const TextStyle(color: Colors.white)
+      ),
+      title: "Scan my document",
+    ).then(shoResult);
   }
 
   @override
