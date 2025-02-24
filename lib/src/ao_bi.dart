@@ -149,10 +149,10 @@ class BIUtil {
 (String?, String) _extractTheDate(String content) =>
     _extract(content: content, expName: "DATE", groupId: 0);
 
-/// [_extractTheFirstContent] Extract any content before a whitespace and return a tuple.
-/// (String? valueFound, String content)
-(String?, String) _extractTheFirstContent(String content) =>
-    _extract(content: content, expName: "WHITE_SPACE", groupId: 0);
+// /// [_extractTheFirstContent] Extract any content before a whitespace and return a tuple.
+// /// (String? valueFound, String content)
+// (String?, String) _extractTheFirstContent(String content) =>
+//     _extract(content: content, expName: "WHITE_SPACE", groupId: 0);
 
 /// [_extractTheFirstGender] Extract the value that corresponds to a gender
 /// and return a tuple. (String? valueFound, String content)
