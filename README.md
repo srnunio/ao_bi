@@ -71,7 +71,7 @@ In order to use this plugin, add the following to your Info.plist file:
 
 ## Preview
 <br>
-<img title="" src="https://github.com/srnunio/ao_bi/blob/master/preview.gif" alt="" width="400">
+<img title="" src="https://github.com/srnunio/bi_ao/blob/master/preview.gif" alt="" width="400">
 </br>
 
 ## License
