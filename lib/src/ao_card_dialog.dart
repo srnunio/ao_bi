@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:ao_bi/src/ao_bi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 import 'models.dart';
 
@@ -33,6 +33,9 @@ class BIQrView extends StatefulWidget {
 class _BIQrViewState extends State<BIQrView> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
+  /// [_isDetectedData] it's is true if data is detected and stop verification
+  bool _isDetectedData = false;
+
   /// [_controller] QR controller
   QRViewController? _controller;
 
@@ -46,20 +49,22 @@ class _BIQrViewState extends State<BIQrView> {
   void _onRead(String code) async {
     _controller?.stopCamera();
     var data = BIUtil.check(code);
-    Navigator.of(context).pop(data);
+    _onClose(data);
   }
 
   /// [_onClose] close page
-  void _onClose() {
-    Navigator.of(context).pop();
+  void _onClose([dynamic data]) {
+    if (mounted) Navigator.pop(context, data);
   }
 
   /// [_onQRViewCreated] init qr controller
   void _onQRViewCreated(QRViewController controller) {
     setState(() => _controller = controller);
-    controller.scannedDataStream.listen((sd) {
-      if (context.mounted && sd.code != null) {
-        controller.pauseCamera();
+    _controller?.scannedDataStream.listen((sd) {
+      var data = (sd.code ?? '').trim();
+      if (mounted && data.isNotEmpty && !_isDetectedData) {
+        _controller?.pauseCamera();
+        _isDetectedData = true;
         _onRead(sd.code!);
       }
     });
@@ -112,7 +117,6 @@ class _BIQrViewState extends State<BIQrView> {
   @override
   void dispose() {
     _controller?.dispose();
-    widget.onDispose();
     _controller = null;
     super.dispose();
   }

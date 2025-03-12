@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void onScanner() async {
     BIUtil.scan(
       context: context,
+      useRootNavigator: true,
       style: BIQrStyle(
         appBarBackgroundColor: Theme.of(context).colorScheme.inversePrimary,
         accentColor: Colors.white,
