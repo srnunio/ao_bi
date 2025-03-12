@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:ao_bi/src/ao_bi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 import 'models.dart';
 
@@ -19,11 +19,15 @@ class BIQrView extends StatefulWidget {
 
   final Function() onDispose;
 
+  /// [onClose] Triggers an intention to close the open dialogue
+  final Function(dynamic data) onClose;
+
   BIQrView({
     required this.title,
     required this.style,
     required this.cutOutSize,
     required this.onDispose,
+    required this.onClose,
   });
 
   @override
@@ -46,12 +50,12 @@ class _BIQrViewState extends State<BIQrView> {
   void _onRead(String code) async {
     _controller?.stopCamera();
     var data = BIUtil.check(code);
-    Navigator.of(context).pop(data);
+    _onClose(data);
   }
 
   /// [_onClose] close page
-  void _onClose() {
-    Navigator.of(context).pop();
+  void _onClose([dynamic data]) {
+    widget.onClose(data);
   }
 
   /// [_onQRViewCreated] init qr controller

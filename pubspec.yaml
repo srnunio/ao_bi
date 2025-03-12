@@ -1,6 +1,6 @@
 name: ao_bi
 description: Validate Angolan Identity Card
-version: 0.2.0
+version: 0.2.1
 repository: https://github.com/srnunio/ao_bi
 
 environment:
@@ -8,7 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  qr_code_scanner: ^0.7.0
+  qr_code_scanner_plus: ^2.0.10+1
   flutter:
     sdk: flutter
 

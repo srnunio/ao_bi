@@ -1,4 +1,3 @@
-## 0.2.0
-* Improvement in data extraction
-* Embedded QR code reading
-* Validate the ID number
+## 0.2.1 
+* Change Qr scan version 
+* Other improvements
