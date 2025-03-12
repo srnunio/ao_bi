@@ -6,7 +6,7 @@ Validate Angolan Identity Card
 
 ```yaml
 dependencies:
-  ao_bi: ^0.2.0
+  ao_bi: ^0.2.1
   
   or
 
