@@ -70,8 +70,9 @@ In order to use this plugin, add the following to your Info.plist file:
 ```
 
 ## Preview
-
-<img title="" src="https://github.com/srnunio/bi_ao/blob/main/preview.gif" alt="" width="400">
+<br>
+<img title="" src="https://github.com/srnunio/ao_bi/blob/46521bba3009c85416e8335a759d2959059d6e41/preview.gif?raw=true" alt="" width="400">
+</br>
 
 ## License
 
