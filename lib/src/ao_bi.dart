@@ -71,10 +71,6 @@ class BIUtil {
             style: style ?? BIQrStyle(),
             cutOutSize: cutOutSize,
             onDispose: _onDispose,
-            onClose: (data) {
-              if (Navigator.of(ctx).canPop()) Navigator.of(ctx).pop(data);
-              _onDispose();
-            },
           ),
         );
       },

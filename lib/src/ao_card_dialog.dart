@@ -19,15 +19,11 @@ class BIQrView extends StatefulWidget {
 
   final Function() onDispose;
 
-  /// [onClose] Triggers an intention to close the open dialogue
-  final Function(dynamic data) onClose;
-
   BIQrView({
     required this.title,
     required this.style,
     required this.cutOutSize,
     required this.onDispose,
-    required this.onClose,
   });
 
   @override
@@ -36,6 +32,9 @@ class BIQrView extends StatefulWidget {
 
 class _BIQrViewState extends State<BIQrView> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+
+  /// [_isDetectedData] it's is true if data is detected and stop verification
+  bool _isDetectedData = false;
 
   /// [_controller] QR controller
   QRViewController? _controller;
@@ -55,15 +54,17 @@ class _BIQrViewState extends State<BIQrView> {
 
   /// [_onClose] close page
   void _onClose([dynamic data]) {
-    widget.onClose(data);
+    if (mounted) Navigator.pop(context, data);
   }
 
   /// [_onQRViewCreated] init qr controller
   void _onQRViewCreated(QRViewController controller) {
     setState(() => _controller = controller);
-    controller.scannedDataStream.listen((sd) {
-      if (context.mounted && sd.code != null) {
-        controller.pauseCamera();
+    _controller?.scannedDataStream.listen((sd) {
+      var data = (sd.code ?? '').trim();
+      if (mounted && data.isNotEmpty && !_isDetectedData) {
+        _controller?.pauseCamera();
+        _isDetectedData = true;
         _onRead(sd.code!);
       }
     });
@@ -116,7 +117,6 @@ class _BIQrViewState extends State<BIQrView> {
   @override
   void dispose() {
     _controller?.dispose();
-    widget.onDispose();
     _controller = null;
     super.dispose();
   }
