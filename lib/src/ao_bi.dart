@@ -5,25 +5,6 @@ import 'models.dart';
 class BIUtil {
   BIUtil._();
 
-  /// [_dialogContext] Instance of the open dialog.
-  static BuildContext? _dialogContext;
-
-  /// [dismissDialog] close popup if is visible
-  /// ```dart
-  ///     BIUtil.dismissDialog();
-  /// ```
-  static void dismissDialog() async {
-    final noContext = _dialogContext == null;
-    assert(() {
-      if (noContext || !(_dialogContext?.mounted ?? false)) {
-        throw FlutterError('No dialog instances found');
-      }
-      return true;
-    }());
-    Navigator.pop(_dialogContext!);
-    _onDispose();
-  }
-
   /// [scan] popup to scanner angolan identity card
   ///
   /// [title] title in app bar
@@ -41,7 +22,7 @@ class BIUtil {
     bool useSafeArea = false,
   }) async {
     assert(() {
-      if (_dialogContext != null) {
+      if (BIQrView.isVisible) {
         throw FlutterError('No more than two instances are allowed');
       }
       return true;
@@ -54,8 +35,6 @@ class BIUtil {
       barrierColor: Colors.transparent,
       useRootNavigator: useRootNavigator,
       builder: (ctx) {
-        /// register instance
-        _dialogContext = ctx;
         return Dialog(
           backgroundColor: Colors.black12,
           clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -70,7 +49,6 @@ class BIUtil {
             title: title,
             style: style ?? BIQrStyle(),
             cutOutSize: cutOutSize,
-            onDispose: _onDispose,
           ),
         );
       },
@@ -125,12 +103,6 @@ class BIUtil {
     } catch (error) {
       return null;
     }
-  }
-
-  /// [_dialogContext] Remove the instance from the context,
-  /// this indicates that the dialog is closed.
-  static void _onDispose() {
-    _dialogContext = null;
   }
 }
 

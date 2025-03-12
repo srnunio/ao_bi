@@ -8,6 +8,11 @@ import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'models.dart';
 
 class BIQrView extends StatefulWidget {
+  static bool _isVisible = false;
+
+  /// [isVisible] Flags if the scanner page is visible
+  static bool get isVisible => _isVisible;
+
   /// [title] title on appbar
   final String title;
 
@@ -17,17 +22,16 @@ class BIQrView extends StatefulWidget {
   /// [style] Modify the style of the Bar app
   final BIQrStyle style;
 
-  final Function() onDispose;
-
   BIQrView({
     required this.title,
     required this.style,
     required this.cutOutSize,
-    required this.onDispose,
   });
 
   @override
   _BIQrViewState createState() => _BIQrViewState();
+
+  static void _setIsVisible(bool state) => _isVisible = state;
 }
 
 class _BIQrViewState extends State<BIQrView> {
@@ -115,8 +119,14 @@ class _BIQrViewState extends State<BIQrView> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    BIQrView._setIsVisible(true);
+  }
+
+  @override
   void dispose() {
-    _controller?.dispose();
+    BIQrView._setIsVisible(false);
     _controller = null;
     super.dispose();
   }
